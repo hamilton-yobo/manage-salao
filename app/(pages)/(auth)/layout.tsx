@@ -1,12 +1,5 @@
-export const metadata = {
-  title: 'Click Salão',
-  description: 'Criado por Hamilton Yobo',
-}
-
-import './styles/output.css';
-import StoreProvider from './StoreProvider';
-import Header from './components/Header';
-import Sidebar from './components/Sidebar';
+import '../../styles/output.css';
+import StoreProvider from '../../StoreProvider';
 
 export default function RootLayout({
   children,
@@ -22,11 +15,8 @@ export default function RootLayout({
           <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
         </head>
         <body className='bg-grayLight'>
-          <Header/>
-          <div className='flex'>
-            <Sidebar/>
-            {children}
-          </div>
+          {children}
+          <p>authLayout</p>
         </body>
       </html>
     </StoreProvider>
