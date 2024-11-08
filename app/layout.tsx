@@ -7,6 +7,7 @@ import './styles/output.css';
 import StoreProvider from './StoreProvider';
 import Header from './components/Header';
 import Sidebar from './components/Sidebar';
+import { usePathname } from 'next/navigation';
 
 export default function RootLayout({
   children,
@@ -24,7 +25,7 @@ export default function RootLayout({
         <body className='bg-grayLight'>
           <Header/>
           <div className='flex'>
-            <Sidebar/>
+            <Sidebar />
             {children}
           </div>
         </body>
