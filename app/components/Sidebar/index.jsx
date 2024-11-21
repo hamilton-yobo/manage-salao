@@ -22,8 +22,8 @@ const Sidebar = () => {
           const isActive = pathname.startsWith(link.href);
           return (
             <Link href={link.href} key={link.name} className={
-              isActive ? "bg-grayMedium p-2 rounded flex content-center space-x-1"
-                : "hover:bg-grayMedium transition-05 p-2 rounded cursor-pointer flex content-center space-x-1"
+              isActive ? "bg-grayMedium text-beigeLight hover:no-underline no-underline  p-2 rounded flex content-center space-x-1"
+                : "hover:bg-grayMedium hover:no-underline no-underline text-beigeLight transition-05 p-2 rounded cursor-pointer flex content-center space-x-1"
             }>
               <span className="material-symbols-outlined">{link.symbol}</span>
               <p>{link.name}</p>

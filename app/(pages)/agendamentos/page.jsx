@@ -1,10 +1,11 @@
 "use client"
+import 'react-big-calendar/lib/css/react-big-calendar.css';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Calendar, dateFnsLocalizer } from 'react-big-calendar';
-import 'react-big-calendar/lib/css/react-big-calendar.css';
-import { format, parse, startOfWeek, getDay, endOfWeek, addMinutes } from 'date-fns';
+import { format, parse, startOfWeek, getDay, endOfWeek, addMinutes, addWeeks } from 'date-fns';
 import ptBR  from 'date-fns/locale/pt';
+import moment from 'moment';
 import { fetchAgendamentosRequest } from '@/app/store/modules/agendamento/actions';
 
 const locales = {
@@ -57,10 +58,10 @@ export default function () {
       const filtros = {
         salaoId: "672a645394524c18905aca24",
         periodo: {
-          inicio: startOfWeek(Date.now(),{weekStartsOn: 1}).toISOString(), 
-          final: endOfWeek(Date.now(), {weekStartsOn: 8}).toISOString()
+          inicio: startOfWeek(Date.now(), {weekStartsOn: 1}).toISOString(), 
+          final: endOfWeek(addWeeks(Date.now(), 1), {weekStartsOn: 1}).toISOString()
         }
-      }
+      }; 
         // const fetchInterval = setInterval(() => {
             dispatch(fetchAgendamentosRequest(filtros));
         // }, 5000); // Atualiza a cada 5 segundos
@@ -69,10 +70,27 @@ export default function () {
   }, [dispatch]);
 
   const formatEventos = agendamentos.map((agendamento) => ({
-    title: `${agendamento.servicoId.titulo} - ${agendamento.clienteId.nome} - ${agendamento.clienteId.sobrenome} - \(${agendamento.colaboradorId.nome} ${agendamento.colaboradorId.sobrenome}\)`,
+    title: `${agendamento.servicoId.titulo} - ${agendamento.clienteId.nome} ${agendamento.clienteId.sobrenome} - \(${agendamento.colaboradorId.nome} ${agendamento.colaboradorId.sobrenome}\)`,
     start: new Date(agendamento.data),
     end: addMinutes(new Date(agendamento.data), agendamento.servicoId.duracao),
   }));
+
+  const formatRange = (periodo) => {
+    let finalRange = {};
+    if (Array.isArray(periodo)) {
+      finalRange = {
+        start: moment(periodo[0]).format('YYYY-MM-DD'),
+        end: moment(periodo[periodo.length - 1]).format('YYYY-MM-DD')
+      }
+    } else {
+      finalRange = {
+        start: moment(periodo.start).format('YYYY-MM-DD'),
+        end: moment(periodo.end).format('YYYY-MM-DD')
+      }
+
+    }
+    return finalRange;
+  }
     
   const [view, setView] = useState('week'); // Visualizacao atual no estado
   const [data, setDate] = useState(new Date()); // Data atual no estado
@@ -95,6 +113,17 @@ export default function () {
           <Calendar
             localizer={localizer}
             events={formatEventos}
+            onRangeChange={(periodo) => {
+              const { start, end } = formatRange(periodo);
+              const filtros = {
+                salaoId: "672a645394524c18905aca24",
+                periodo: {
+                  inicio: start, 
+                  final: end
+                }
+              }; 
+              dispatch(fetchAgendamentosRequest(filtros));
+            }}
             messages={messages}
             view={view}
             onView={handleChangeView} // atualiza o estado ao mudar a visualização
